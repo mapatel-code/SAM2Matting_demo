@@ -1,0 +1,20 @@
+# SAM2Matting's own requirements, minus torch-tensorrt (NVIDIA-only, breaks CPU installs).
+# Install torch/torchvision FIRST from the right index - see setup.ps1 or README.
+tensordict
+numpy
+tqdm
+hydra-core
+iopath
+pillow
+opencv-python-headless
+matplotlib
+fvcore
+pandas
+scikit-image
+scipy
+timm
+loguru
+einops
+ftfy
+regex
+psutil
