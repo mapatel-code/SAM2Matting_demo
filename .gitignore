@@ -1,0 +1,4 @@
+.venv/
+checkpoints/
+third_party/
+hero_matte/__pycache__/

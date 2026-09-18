@@ -1,0 +1,48 @@
+{
+  "source": "C:\\Users\\mahar\\Downloads\\Original\\WP0AA2YA7SL010505--07-Original.png",
+  "pipeline_version": "0.1.0",
+  "variant": "tiny",
+  "runtime": "NVIDIA GeForce RTX 3060 Laptop GPU [cuda, bfloat16]",
+  "image_size": [
+    1152,
+    864
+  ],
+  "flags": [],
+  "candidates": [
+    {
+      "label": "car",
+      "det_score": 0.9989,
+      "box": [
+        128.3,
+        209.0,
+        1049.1,
+        609.2
+      ],
+      "area_frac": 0.2591,
+      "completeness": 1.0,
+      "centrality": 0.9628,
+      "score": 0.2541
+    }
+  ],
+  "hero": {
+    "label": "car",
+    "det_score": 0.9989,
+    "box": [
+      128.3,
+      209.0,
+      1049.1,
+      609.2
+    ],
+    "area_frac": 0.2591,
+    "completeness": 1.0,
+    "centrality": 0.9628,
+    "score": 0.2541
+  },
+  "timings_s": {
+    "detect": 0.16,
+    "matting": 0.1,
+    "total": 0.96
+  },
+  "status": "ok",
+  "peak_vram": "0.97 GB peak / 6.0 GB total"
+}

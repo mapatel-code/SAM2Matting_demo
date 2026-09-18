@@ -1,0 +1,146 @@
+{
+  "source": "C:\\Users\\mahar\\Downloads\\Original\\LSJWP4U33SZ040927--27-Original.png",
+  "pipeline_version": "0.1.0",
+  "variant": "tiny",
+  "runtime": "NVIDIA GeForce RTX 3060 Laptop GPU [cuda, bfloat16]",
+  "image_size": [
+    1152,
+    864
+  ],
+  "flags": [],
+  "candidates": [
+    {
+      "label": "car",
+      "det_score": 0.9985,
+      "box": [
+        116.5,
+        267.3,
+        1004.1,
+        610.1
+      ],
+      "area_frac": 0.228,
+      "completeness": 1.0,
+      "centrality": 0.9807,
+      "score": 0.2257
+    },
+    {
+      "label": "car",
+      "det_score": 0.9582,
+      "box": [
+        144.4,
+        324.0,
+        269.6,
+        406.2
+      ],
+      "area_frac": 0.0081,
+      "completeness": 1.0,
+      "centrality": 0.4597,
+      "score": 0.0053
+    },
+    {
+      "label": "car",
+      "det_score": 0.6749,
+      "box": [
+        145.7,
+        360.1,
+        180.8,
+        417.2
+      ],
+      "area_frac": 0.0019,
+      "completeness": 1.0,
+      "centrality": 0.4189,
+      "score": 0.001
+    },
+    {
+      "label": "car",
+      "det_score": 0.9108,
+      "box": [
+        967.0,
+        344.2,
+        1042.8,
+        384.3
+      ],
+      "area_frac": 0.0015,
+      "completeness": 1.0,
+      "centrality": 0.4006,
+      "score": 0.0009
+    },
+    {
+      "label": "car",
+      "det_score": 0.8156,
+      "box": [
+        991.8,
+        319.3,
+        1151.0,
+        418.5
+      ],
+      "area_frac": 0.0093,
+      "completeness": 0.2683,
+      "centrality": 0.3154,
+      "score": 0.0007
+    },
+    {
+      "label": "truck",
+      "det_score": 0.5454,
+      "box": [
+        992.9,
+        320.0,
+        1149.8,
+        418.1
+      ],
+      "area_frac": 0.0094,
+      "completeness": 0.2636,
+      "centrality": 0.3143,
+      "score": 0.0005
+    },
+    {
+      "label": "car",
+      "det_score": 0.8817,
+      "box": [
+        1055.8,
+        335.3,
+        1152.0,
+        422.1
+      ],
+      "area_frac": 0.0052,
+      "completeness": 0.0149,
+      "centrality": 0.2483,
+      "score": 0.0
+    },
+    {
+      "label": "car",
+      "det_score": 0.7613,
+      "box": [
+        1090.1,
+        360.7,
+        1150.9,
+        422.4
+      ],
+      "area_frac": 0.0034,
+      "completeness": 0.0069,
+      "centrality": 0.2389,
+      "score": 0.0
+    }
+  ],
+  "hero": {
+    "label": "car",
+    "det_score": 0.9985,
+    "box": [
+      116.5,
+      267.3,
+      1004.1,
+      610.1
+    ],
+    "area_frac": 0.228,
+    "completeness": 1.0,
+    "centrality": 0.9807,
+    "score": 0.2257
+  },
+  "timings_s": {
+    "detect": 1.11,
+    "matting": 0.53,
+    "total": 2.32
+  },
+  "status": "ok",
+  "peak_vram": "0.97 GB peak / 6.0 GB total"
+}
