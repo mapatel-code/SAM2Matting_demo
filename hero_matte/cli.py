@@ -141,6 +141,13 @@ def process_one(path: Path, out_dir: Path, detector, refiner, args, runtime) -> 
     # Canonical artefact: the raw matte, untouched by any presentation choice.
     Image.fromarray(alpha_u8, mode="L").save(out_dir / "pha.png")
 
+    # The Mask R-CNN prompt that SAM2Matting was asked to refine. Diff it against pha.png:
+    # if they are near-identical, the matting head is echoing the prompt rather than
+    # refining it, which is a different problem from insufficient resolution.
+    Image.fromarray((selection.hero.mask.astype(np.uint8) * 255), mode="L").save(
+        out_dir / "prompt.png"
+    )
+
     wanted = ["solid", "matte"] if args.glass == "both" else [args.glass]
     for kind in wanted:
         a = compose.solidify_glass(alpha_u8) if kind == "solid" else alpha_u8

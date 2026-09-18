@@ -2,3 +2,4 @@
 checkpoints/
 third_party/
 hero_matte/__pycache__/
+__pycache__/
