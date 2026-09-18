@@ -18,7 +18,7 @@ from typing import List
 import numpy as np
 from PIL import Image
 
-from . import __version__, compose, runtime as rt
+from . import __version__, compose, refine as refine_mod, runtime as rt
 from .detect import VehicleDetector, select_hero
 from .matting import MattingRefiner, VARIANTS
 
@@ -47,8 +47,21 @@ def parse_args(argv=None) -> argparse.Namespace:
                    help="flag if the hero covers less than this fraction of the frame")
     g.add_argument("--min-completeness", type=float, default=0.35,
                    help="flag if the hero looks cropped by the frame edge")
-    g.add_argument("--mask-dilate", type=int, default=3,
-                   help="grow the coarse mask by N px to reclaim aerials/mirrors before matting")
+    g.add_argument("--mask-dilate", type=int, default=0,
+                   help="grow the coarse mask by N px before matting; >0 leaks floor into "
+                        "tight gaps like the one under a front bumper")
+
+    g = p.add_argument_group("matte resolution")
+    g.add_argument("--crop-mode", choices=["tiles", "hero", "full"], default="tiles",
+                   help="tiles = native-resolution tiles across the silhouette (best); "
+                        "hero = one pass over the car's bbox; full = one pass over the "
+                        "whole frame (the model's 512x512 alpha grid spread over everything)")
+    g.add_argument("--tile", type=int, default=640,
+                   help="tile size in source pixels; near the model's 512px alpha grid is ideal")
+    g.add_argument("--overlap", type=int, default=160, help="tile overlap for feather blending")
+    g.add_argument("--refine", choices=["guided", "none"], default="guided",
+                   help="colour guided filter to snap upsampled alpha edges to the photo")
+    g.add_argument("--refine-radius", type=int, default=4)
 
     g = p.add_argument_group("output")
     g.add_argument("--glass", choices=["solid", "matte", "both"], default="both",
@@ -106,8 +119,22 @@ def process_one(path: Path, out_dir: Path, detector, refiner, args, runtime) -> 
         return record
 
     t0 = time.perf_counter()
-    alpha = refiner.refine(image, selection.hero.mask)
+    alpha = refiner.refine(
+        image,
+        selection.hero.mask,
+        mode=args.crop_mode,
+        tile=args.tile,
+        overlap=args.overlap,
+    )
     record["timings_s"]["matting"] = round(time.perf_counter() - t0, 2)
+    record["crop_mode"] = args.crop_mode
+    record["forward_passes"] = refiner.last_forward_passes
+
+    if args.refine == "guided":
+        t0 = time.perf_counter()
+        alpha = refine_mod.guided_refine(rgb, alpha, radius=args.refine_radius)
+        record["timings_s"]["refine"] = round(time.perf_counter() - t0, 2)
+    alpha = refine_mod.cleanup(alpha)
 
     alpha_u8 = compose.alpha_to_u8(alpha)
 

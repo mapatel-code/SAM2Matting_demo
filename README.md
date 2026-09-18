@@ -81,16 +81,48 @@ Plus `output/manifest.csv` for the batch, listing anything flagged for review.
 **Look at `debug.png` first.** It shows you whether hero selection agreed with you before
 you start judging matte quality.
 
+## Why matte resolution needs crop modes
+
+The model force-resizes any input to 1024×1024 (aspect ratio destroyed) and its
+progressive alpha chain ends at **512×512**:
+
+```
+features_16 @64 ──► alpha1 @128 ──► alpha2 @256 ──► alpha3 @512 ──► bilinear upsample to native
+```
+
+That 512×512 budget is spent on *whatever the model was shown*. Show it a whole 1152×864
+photo where the car is a quarter of the frame and the entire car gets ~387×238 alpha
+pixels — finer than that (wheel spokes, the wheel-arch gap, the few-pixel gap between a
+front bumper and the floor) cannot be represented, and the matte collapses to a
+silhouette with the floor smeared into it.
+
+`--crop-mode` decides how that budget is spent:
+
+| mode | forward passes | what the 512² grid covers |
+|---|---|---|
+| `full` | 1 | the whole frame — fastest, blobbiest |
+| `hero` | 1 | the car's bbox — ~2× more detail |
+| `tiles` *(default)* | ~8–20 | one 640×640 patch each, i.e. near 1:1 with source pixels |
+
+Tiles whose prompt mask is entirely inside or outside the subject are filled
+analytically and never hit the GPU, so only boundary tiles cost anything. On a 3060 a
+forward pass is ~0.1 s, so `tiles` costs a couple of seconds per image.
+
+`--mask-dilate` defaults to **0**. Growing the prompt pushes it into exactly the tight
+gaps (under the bumper, inside wheel arches) you want preserved.
+
 ## Useful flags
 
 ```
 --variant tiny|base+        which checkpoint
+--crop-mode tiles|hero|full where the model spends its 512x512 alpha budget
+--tile N / --overlap N      tile geometry for --crop-mode tiles
+--refine guided|none        colour guided filter, snaps alpha edges to the photo
 --device auto|cuda|cpu      override device detection
 --glass solid|matte|both    window treatment in derived images
 --background gradient|white|none
 --no-shadow                 skip the synthetic contact shadow
---mask-dilate N             grow the coarse mask N px before matting (default 3;
-                            reclaims aerials and wing mirrors Mask R-CNN clips)
+--mask-dilate N             grow the coarse mask N px before matting (default 0)
 --min-completeness F        below this the hero is flagged as possibly cropped
 --overwrite                 redo images that already have a meta.json
 --limit N                   process only the first N images
